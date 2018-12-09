@@ -7,41 +7,41 @@ struct generic_array {
     int length;
 };
 
-#define array_method(type, name) array_ ## type ## _ ## name
+#define array(type) array_ ## type
 #define array_type_decl(type) \
-    struct array_ ## type { type* data; size_t size; int length; }; \
-    typedef struct array_ ## type array_ ## type[1]
+    struct array(type) { type* data; size_t size; int length; }; \
+    typedef struct array(type) array(type)[1]
+#define array_method(type, name) array_ ## type ## _ ## name
+
+#define array_function_free(type) \
+    void array_method(type, free)(array(type) a) { \
+        generic_array_free((struct generic_array *)a); \
+    }
+
+#define array_function_push(type) \
+    void array_method(type, push)(array(type) a, type v) { \
+        generic_array_ensure_size((struct generic_array *)a, sizeof(type), a->length + 1); \
+        a->data[a->length] = v; \
+        a->length ++; \
+    }
 
 extern void generic_array_free(struct generic_array *a);
 extern void generic_array_ensure_size(struct generic_array *a, size_t element_size, int requested_size);
 
 #define declare_array(type) \
     array_type_decl(type); \
-    extern void array_method(type, free)(array_ ## type a); \
-    extern void array_method(type, push)(array_ ## type a, type v)
+    extern void array_method(type, free)(array(type) a); \
+    extern void array_method(type, push)(array(type) a, type v)
 
 #define declare_array_inline(type) \
     array_type_decl(type); \
-    static void array_method(type, free)(array_ ## type a) { \
-        generic_array_free((struct generic_array *)a); \
-    } \
-    static void array_method(type, push)(array_ ## type a, type v) { \
-        generic_array_ensure_size((struct generic_array *)a, sizeof(type), a->length + 1); \
-        a->data[a->length] = v; \
-        a->length ++; \
-    }
+    static array_function_free(type) \
+    static array_function_push(type)
 
 #define implement_array(type) \
-    void array_method(type, free)(array_ ## type a) { \
-        generic_array_free((struct generic_array *)a); \
-    } \
-    void array_method(type, push)(array_ ## type a, type v) { \
-        generic_array_ensure_size((struct generic_array *)a, sizeof(type), a->length + 1); \
-        a->data[a->length] = v; \
-        a->length ++; \
-    }
+    array_function_free(type) \
+    array_function_push(type)
 
-#define array(type) array_ ## type
 #define array_free(type) array_method(type, free)
 #define array_push(type) array_method(type, push)
 

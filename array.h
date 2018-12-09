@@ -60,5 +60,6 @@ extern void generic_array_ensure_size(struct generic_array *a, size_t element_si
 #define array_push(type) array_method(type, push)
 #define array_get(type) array_method(type, get)
 #define array_set(type) array_method(type, set)
+#define element(a, i) (a)->data[i]
 
 #define array_init() {{NULL, 0, 0 }}

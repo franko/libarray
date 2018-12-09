@@ -3,10 +3,12 @@
 
 #include "array.h"
 
-typedef struct {
+typedef struct foo foo;
+
+struct foo {
     int n, square;
     double root;
-} foo;
+};
 
 declare_array_inline(foo);
 
@@ -18,7 +20,8 @@ int main() {
     }    
 
     for (int i = 0; i < myarray->length; i++) {
-        printf("%i %g\n", myarray->data[i].square, myarray->data[i].root);
+        foo e = array_get(foo)(myarray, i);
+        printf("%d %g\n", e.square, e.root);
     }
 
     array_free(foo)(myarray);

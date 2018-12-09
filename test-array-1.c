@@ -12,7 +12,7 @@ int main() {
     }    
 
     for (int i = 0; i < myarray->length; i++) {
-        printf("%i\n", myarray->data[i]);
+        printf("%i\n", array_get(int)(myarray, i));
     }
 
     array_free(int)(myarray);

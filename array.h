@@ -25,18 +25,32 @@ struct generic_array {
         a->length ++; \
     }
 
+#define array_function_get(type) \
+    type array_method(type, get)(array(type) a, int i) { \
+        return a->data[i]; \
+    }
+
+#define array_function_set(type) \
+    void array_method(type, set)(array(type) a, int i, type value) { \
+        a->data[i] = value; \
+    }
+
 extern void generic_array_free(struct generic_array *a);
 extern void generic_array_ensure_size(struct generic_array *a, size_t element_size, int requested_size);
 
 #define declare_array(type) \
     array_type_decl(type); \
     extern void array_method(type, free)(array(type) a); \
-    extern void array_method(type, push)(array(type) a, type v)
+    extern void array_method(type, push)(array(type) a, type v); \
+    static array_function_get(type) \
+    static array_function_set(type)
 
 #define declare_array_inline(type) \
     array_type_decl(type); \
     static array_function_free(type) \
-    static array_function_push(type)
+    static array_function_push(type) \
+    static array_function_get(type) \
+    static array_function_set(type)
 
 #define implement_array(type) \
     array_function_free(type) \
@@ -44,5 +58,7 @@ extern void generic_array_ensure_size(struct generic_array *a, size_t element_si
 
 #define array_free(type) array_method(type, free)
 #define array_push(type) array_method(type, push)
+#define array_get(type) array_method(type, get)
+#define array_set(type) array_method(type, set)
 
 #define array_init() {{NULL, 0, 0 }}

@@ -19,10 +19,13 @@ struct generic_array {
     }
 
 #define array_function_push(type) \
-    void array_method(type, push)(array(type) a, type v) { \
-        generic_array_ensure_size((struct generic_array *)a, sizeof(type), a->length + 1); \
+    int array_method(type, push)(array(type) a, type v) { \
+        if (generic_array_ensure_size((struct generic_array *)a, sizeof(type), a->length + 1)) { \
+            return 1; \
+        } \
         a->data[a->length] = v; \
         a->length ++; \
+        return 0; \
     }
 
 #define array_function_get(type) \
@@ -36,7 +39,7 @@ struct generic_array {
     }
 
 extern void generic_array_free(struct generic_array *a);
-extern void generic_array_ensure_size(struct generic_array *a, size_t element_size, int requested_size);
+extern int generic_array_ensure_size(struct generic_array *a, size_t element_size, int requested_size);
 
 #define declare_array(type) \
     array_type_decl(type); \
@@ -60,6 +63,6 @@ extern void generic_array_ensure_size(struct generic_array *a, size_t element_si
 #define array_push(type) array_method(type, push)
 #define array_get(type) array_method(type, get)
 #define array_set(type) array_method(type, set)
-#define element(a, i) (a)->data[i]
+#define element(a, i) ((a)->data[i])
 
 #define array_init() {{NULL, 0, 0 }}

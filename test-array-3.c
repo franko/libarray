@@ -16,7 +16,11 @@ int main() {
     array(foo) myarray = array_init();
 
     for (int i = 0; i < 100; i++) {
-        array_push(foo)(myarray, (foo) {i, i * i, sqrt(i)});
+        if (array_push(foo)(myarray, (foo) {i, i * i, sqrt(i)})) {
+            fprintf(stderr, "Cannot allocate memory, exiting.\n");
+            array_free(foo)(myarray);
+            return 1;
+        }
     }    
 
     for (int i = 0; i < myarray->length; i++) {

@@ -45,15 +45,15 @@ extern int generic_array_ensure_size(struct generic_array *a, size_t element_siz
     array_type_decl(type); \
     extern void array_method(type, free)(array(type) a); \
     extern int array_method(type, push)(array(type) a, type v); \
-    static array_function_get(type) \
-    static array_function_set(type)
+    static inline array_function_get(type) \
+    static inline array_function_set(type)
 
 #define declare_array_inline(type) \
     array_type_decl(type); \
-    static array_function_free(type) \
-    static array_function_push(type) \
-    static array_function_get(type) \
-    static array_function_set(type)
+    static inline array_function_free(type) \
+    static inline array_function_push(type) \
+    static inline array_function_get(type) \
+    static inline array_function_set(type)
 
 #define implement_array(type) \
     array_function_free(type) \

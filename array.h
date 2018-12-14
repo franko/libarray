@@ -44,7 +44,7 @@ extern int generic_array_ensure_size(struct generic_array *a, size_t element_siz
 #define declare_array(type) \
     array_type_decl(type); \
     extern void array_method(type, free)(array(type) a); \
-    extern void array_method(type, push)(array(type) a, type v); \
+    extern int array_method(type, push)(array(type) a, type v); \
     static array_function_get(type) \
     static array_function_set(type)
 

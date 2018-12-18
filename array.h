@@ -8,10 +8,23 @@ struct generic_array {
 };
 
 #define array(type) array_ ## type
+
+/* The macro below should be used when the argument should to be evaluated
+   before the macro body evaluation. The reason is that the string concatenation
+   of "array" would otherwise prevent the evaluation of the argument.
+
+   See "Macros that call other macros that stringize or concatenate" in:
+   https://gcc.gnu.org/onlinedocs/cpp/Argument-Prescan.html */
+#define ARRAY_X(type) array(type)
+
 #define array_type_decl(type) \
     struct array(type) { type* data; size_t size; int length; }; \
     typedef struct array(type) array(type)[1]
 #define array_method(type, name) array_ ## type ## _ ## name
+
+/* See comment above for ARRAY_X,
+   "Macros that call other macros that stringize or concatenate". */
+#define ARRAY_METHOD_X(type, name) array_method(type, name)
 
 #define array_function_free(type) \
     void array_method(type, free)(array(type) a) { \

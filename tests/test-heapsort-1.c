@@ -17,9 +17,18 @@ int main() {
         int rint = rand();
         array_push(float)(list, sqrt((float) rint));
     }
+
     array_heapsort(float)(list);
+
+    float previous = -1.0;
     for (int i = 0; i < 100; i++) {
-        printf("%d: %g\n", i, element(list, i));
+        const float current = element(list, i);
+        if (current < previous) {
+            printf("found inversion: array[%d] = %g, array[%d] = %g\n", i - 1, previous, i, current);
+            return 1;
+        }
+        printf("%d: %g\n", i, current);
+        previous = current;
     }
     return 0;
 }

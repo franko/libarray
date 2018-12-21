@@ -26,12 +26,12 @@ struct generic_array {
    "Macros that call other macros that stringize or concatenate". */
 #define ARRAY_METHOD_X(type, name) array_method(type, name)
 
-#define array_function_free(type) \
+#define ARRAY_FREE_IMPL(type) \
     void array_method(type, free)(array(type) a) { \
         generic_array_free((struct generic_array *)a); \
     }
 
-#define array_function_push(type) \
+#define ARRAY_PUSH_IMPL(type) \
     int array_method(type, push)(array(type) a, type v) { \
         if (generic_array_ensure_size((struct generic_array *)a, sizeof(type), a->length + 1)) { \
             return 1; \
@@ -41,12 +41,12 @@ struct generic_array {
         return 0; \
     }
 
-#define array_function_get(type) \
+#define ARRAY_GET_IMPL(type) \
     type array_method(type, get)(array(type) a, int i) { \
         return a->data[i]; \
     }
 
-#define array_function_set(type) \
+#define ARRAY_SET_IMPL(type) \
     void array_method(type, set)(array(type) a, int i, type value) { \
         a->data[i] = value; \
     }
@@ -58,19 +58,19 @@ extern int generic_array_ensure_size(struct generic_array *a, size_t element_siz
     array_type_decl(type); \
     extern void array_method(type, free)(array(type) a); \
     extern int array_method(type, push)(array(type) a, type v); \
-    static inline array_function_get(type) \
-    static inline array_function_set(type)
+    static inline ARRAY_GET_IMPL(type) \
+    static inline ARRAY_SET_IMPL(type)
 
 #define declare_array_inline(type) \
     array_type_decl(type); \
-    static inline array_function_free(type) \
-    static inline array_function_push(type) \
-    static inline array_function_get(type) \
-    static inline array_function_set(type)
+    static inline ARRAY_FREE_IMPL(type) \
+    static inline ARRAY_PUSH_IMPL(type) \
+    static inline ARRAY_GET_IMPL(type) \
+    static inline ARRAY_SET_IMPL(type)
 
 #define implement_array(type) \
-    array_function_free(type) \
-    array_function_push(type)
+    ARRAY_FREE_IMPL(type) \
+    ARRAY_PUSH_IMPL(type)
 
 #define array_free(type) array_method(type, free)
 #define array_push(type) array_method(type, push)

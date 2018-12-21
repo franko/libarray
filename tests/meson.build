@@ -1,0 +1,11 @@
+test_array_1 = executable('test-array-1', 'test-array-1.c', link_with: libarray, include_directories: array_include_dir, dependencies: [])
+test_array_2 = executable('test-array-2', 'test-array-2.c', link_with: libarray, include_directories: array_include_dir, dependencies: [])
+test_array_3 = executable('test-array-3', 'test-array-3.c', link_with: libarray, include_directories: array_include_dir, dependencies: m_dep)
+test_array_3b = executable('test-array-3b', 'test-array-3b.c', link_with: libarray, include_directories: array_include_dir, dependencies: m_dep)
+test_heapsort_1 = executable('test-heapsort-1', 'test-heapsort-1.c', link_with: libarray, include_directories: array_include_dir, dependencies: m_dep)
+
+test('test array 1', test_array_1)
+test('test array 2', test_array_1)
+test('test array 3', test_array_1)
+test('test array 3b', test_array_1)
+test('test heapsort 1', test_heapsort_1)

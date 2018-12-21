@@ -64,7 +64,7 @@ static void ARRAY_METHOD_X(HEAPSORT_VALUE_TYPE, make_heap)(ARRAY_X(HEAPSORT_VALU
     }
 }
 
-static void heap_select(ARRAY_X(HEAPSORT_VALUE_TYPE) list, int first, int middle, int last) {
+static void ARRAY_METHOD_X(HEAPSORT_VALUE_TYPE, heap_select)(ARRAY_X(HEAPSORT_VALUE_TYPE) list, int first, int middle, int last) {
     ARRAY_METHOD_X(HEAPSORT_VALUE_TYPE, make_heap)(list, first, middle);
     for (int i = middle; i < last; i++) {
         if HEAPSORT_LESS_THAN(element(list, i), element(list, first)) {
@@ -81,7 +81,7 @@ static void ARRAY_METHOD_X(HEAPSORT_VALUE_TYPE, sort_heap)(ARRAY_X(HEAPSORT_VALU
 }
 
 static void ARRAY_METHOD_X(HEAPSORT_VALUE_TYPE, heapsort_range)(ARRAY_X(HEAPSORT_VALUE_TYPE) list, int i0, int i1) {
-    heap_select(list, i0, i1 + 1, i1 + 1);
+    ARRAY_METHOD_X(HEAPSORT_VALUE_TYPE, heap_select)(list, i0, i1 + 1, i1 + 1);
     ARRAY_METHOD_X(HEAPSORT_VALUE_TYPE, sort_heap)(list, i0, i1 + 1);
 }
 

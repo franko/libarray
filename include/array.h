@@ -8,6 +8,7 @@ struct generic_array {
 };
 
 #define array(type) array_ ## type
+#define array_ptr(type) struct array(type) *
 
 /* The macro below should be used when the argument should to be evaluated
    before the macro body evaluation. The reason is that the string concatenation
@@ -25,6 +26,20 @@ struct generic_array {
 /* See comment above for ARRAY_X,
    "Macros that call other macros that stringize or concatenate". */
 #define ARRAY_METHOD_X(type, name) array_method(type, name)
+
+#define ARRAY_NEW_IMPL(type) \
+    array_ptr(type) array_method(type, new)() { \
+        array_ptr(type) a = malloc(sizeof(struct array(type))); \
+        if (a == NULL) { return NULL; } \
+        *a = (struct array(type)) {NULL, 0, 0}; \
+        return a; \
+    }
+
+#define ARRAY_DELETE_IMPL(type) \
+    void array_method(type, delete)(array_ptr(type) a) { \
+        generic_array_free((struct generic_array *)a); \
+        free(a); \
+    }
 
 #define ARRAY_FREE_IMPL(type) \
     void array_method(type, free)(array(type) a) { \
@@ -59,20 +74,26 @@ extern int generic_array_ensure_size(struct generic_array *a, size_t element_siz
     extern void array_method(type, free)(array(type) a); \
     extern int array_method(type, push)(array(type) a, type v); \
     static inline ARRAY_GET_IMPL(type) \
-    static inline ARRAY_SET_IMPL(type)
+    static inline ARRAY_SET_IMPL(type) \
+    static inline ARRAY_NEW_IMPL(type) \
+    static inline ARRAY_DELETE_IMPL(type)
 
 #define declare_array_inline(type) \
     array_type_decl(type); \
     static inline ARRAY_FREE_IMPL(type) \
     static inline ARRAY_PUSH_IMPL(type) \
     static inline ARRAY_GET_IMPL(type) \
-    static inline ARRAY_SET_IMPL(type)
+    static inline ARRAY_SET_IMPL(type) \
+    static inline ARRAY_NEW_IMPL(type) \
+    static inline ARRAY_DELETE_IMPL(type)
 
 #define implement_array(type) \
     ARRAY_FREE_IMPL(type) \
     ARRAY_PUSH_IMPL(type)
 
+#define array_new(type) array_method(type, new)
 #define array_free(type) array_method(type, free)
+#define array_delete(type) array_method(type, delete)
 #define array_push(type) array_method(type, push)
 #define array_get(type) array_method(type, get)
 #define array_set(type) array_method(type, set)

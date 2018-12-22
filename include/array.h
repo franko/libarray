@@ -19,7 +19,7 @@ struct generic_array {
 #define ARRAY_X(type) array(type)
 
 #define array_type_decl(type) \
-    struct array(type) { type* data; size_t size; int length; }; \
+    struct array(type) { type* data; int size; int length; }; \
     typedef struct array(type) array(type)[1]
 #define array_method(type, name) array_ ## type ## _ ## name
 
@@ -67,7 +67,7 @@ struct generic_array {
     }
 
 extern void generic_array_free(struct generic_array *a);
-extern int generic_array_ensure_size(struct generic_array *a, size_t element_size, int requested_size);
+extern int generic_array_ensure_size(struct generic_array *a, int element_size, int requested_size);
 
 #define declare_array(type) \
     array_type_decl(type); \

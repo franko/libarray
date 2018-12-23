@@ -9,7 +9,7 @@ void generic_array_free(struct generic_array *a) {
 
 int generic_array_ensure_size(struct generic_array *a, int element_size, int requested_size) {
     if (a->size >= requested_size) return 0;
-    int new_size = (a->size < 8 ? 8 : a->size);
+    int new_size = (a->size < ARRAY_INIT_MINSIZE ? ARRAY_INIT_MINSIZE : a->size);
     while (new_size < requested_size) {
         new_size *= 2;
     }

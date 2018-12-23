@@ -27,6 +27,8 @@ struct generic_array {
    "Macros that call other macros that stringize or concatenate". */
 #define ARRAY_METHOD_X(type, name) array_method(type, name)
 
+#define ARRAY_INIT_MINSIZE 8
+
 #define ARRAY_NEW_IMPL(type) \
     array_ptr(type) array_method(type, new)() { \
         array_ptr(type) a = malloc(sizeof(struct array(type))); \

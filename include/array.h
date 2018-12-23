@@ -58,6 +58,17 @@ struct generic_array {
         return 0; \
     }
 
+#define ARRAY_REMOVE_IMPL(type) \
+    void array_method(type, remove)(array(type) a, int index) { \
+        for (int i = index; i < a->length - 1; i++) { \
+            element(a, i) = element(a, i + 1); \
+        } \
+        a->length --; \
+        if (a->size / 2 >= a->length + ARRAY_INIT_MINSIZE) { \
+            generic_array_auto_shrink((struct generic_array *) a, sizeof(type)); \
+        } \
+    }
+
 #define ARRAY_GET_IMPL(type) \
     type array_method(type, get)(array(type) a, int i) { \
         return a->data[i]; \
@@ -70,11 +81,13 @@ struct generic_array {
 
 extern void generic_array_free(struct generic_array *a);
 extern int generic_array_ensure_size(struct generic_array *a, int element_size, int requested_size);
+extern void generic_array_auto_shrink(struct generic_array *a, int element_size);
 
 #define declare_array(type) \
     array_type_decl(type); \
     extern void array_method(type, free)(array(type) a); \
     extern int array_method(type, push)(array(type) a, type v); \
+    extern void array_method(type, remove)(array(type) a, int index); \
     static inline ARRAY_GET_IMPL(type) \
     static inline ARRAY_SET_IMPL(type) \
     static inline ARRAY_NEW_IMPL(type) \
@@ -84,6 +97,7 @@ extern int generic_array_ensure_size(struct generic_array *a, int element_size, 
     array_type_decl(type); \
     static inline ARRAY_FREE_IMPL(type) \
     static inline ARRAY_PUSH_IMPL(type) \
+    static inline ARRAY_REMOVE_IMPL(type) \
     static inline ARRAY_GET_IMPL(type) \
     static inline ARRAY_SET_IMPL(type) \
     static inline ARRAY_NEW_IMPL(type) \
@@ -91,10 +105,12 @@ extern int generic_array_ensure_size(struct generic_array *a, int element_size, 
 
 #define implement_array(type) \
     ARRAY_FREE_IMPL(type) \
-    ARRAY_PUSH_IMPL(type)
+    ARRAY_PUSH_IMPL(type) \
+    ARRAY_REMOVE_IMPL(type)
 
 #define array_new(type) array_method(type, new)
 #define array_free(type) array_method(type, free)
+#define array_remove(type) array_method(type, remove)
 #define array_delete(type) array_method(type, delete)
 #define array_push(type) array_method(type, push)
 #define array_get(type) array_method(type, get)

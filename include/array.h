@@ -50,12 +50,7 @@ struct generic_array {
 
 #define ARRAY_PUSH_IMPL(type) \
     int array_method(type, push)(array(type) a, type v) { \
-        if (generic_array_ensure_size((struct generic_array *)a, sizeof(type), a->length + 1)) { \
-            return 1; \
-        } \
-        a->data[a->length] = v; \
-        a->length ++; \
-        return 0; \
+        return array_method(type, insert)(a, a->length, v); \
     }
 
 #define ARRAY_REMOVE_IMPL(type) \
@@ -67,6 +62,19 @@ struct generic_array {
         if (a->size / 2 >= a->length + ARRAY_INIT_MINSIZE) { \
             generic_array_auto_shrink((struct generic_array *) a, sizeof(type)); \
         } \
+    }
+
+#define ARRAY_INSERT_IMPL(type) \
+    int array_method(type, insert)(array(type) a, int index, type value) { \
+        if (generic_array_ensure_size((struct generic_array *)a, sizeof(type), a->length + 1)) { \
+            return 1; \
+        } \
+        for (int i = a->length; i > index; i--) { \
+            element(a, i) = element(a, i - 1); \
+        } \
+        element(a, index) = value; \
+        a->length ++; \
+        return 0; \
     }
 
 #define ARRAY_GET_IMPL(type) \
@@ -86,6 +94,7 @@ extern void generic_array_auto_shrink(struct generic_array *a, int element_size)
 #define declare_array(type) \
     array_type_decl(type); \
     extern void array_method(type, free)(array(type) a); \
+    extern int array_method(type, insert)(array(type) a, int index, type v); \
     extern int array_method(type, push)(array(type) a, type v); \
     extern void array_method(type, remove)(array(type) a, int index); \
     static inline ARRAY_GET_IMPL(type) \
@@ -96,6 +105,7 @@ extern void generic_array_auto_shrink(struct generic_array *a, int element_size)
 #define declare_array_inline(type) \
     array_type_decl(type); \
     static inline ARRAY_FREE_IMPL(type) \
+    static inline ARRAY_INSERT_IMPL(type) \
     static inline ARRAY_PUSH_IMPL(type) \
     static inline ARRAY_REMOVE_IMPL(type) \
     static inline ARRAY_GET_IMPL(type) \
@@ -106,11 +116,13 @@ extern void generic_array_auto_shrink(struct generic_array *a, int element_size)
 #define implement_array(type) \
     ARRAY_FREE_IMPL(type) \
     ARRAY_PUSH_IMPL(type) \
-    ARRAY_REMOVE_IMPL(type)
+    ARRAY_REMOVE_IMPL(type) \
+    ARRAY_INSERT_IMPL(type)
 
 #define array_new(type) array_method(type, new)
 #define array_free(type) array_method(type, free)
 #define array_remove(type) array_method(type, remove)
+#define array_insert(type) array_method(type, insert)
 #define array_delete(type) array_method(type, delete)
 #define array_push(type) array_method(type, push)
 #define array_get(type) array_method(type, get)

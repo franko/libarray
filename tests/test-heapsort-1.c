@@ -1,15 +1,12 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "array.h"
+#include "array/heapsort.h"
+
+static inline int my_compare(float a, float b) { return a < b; }
 
 declare_array_inline(float);
-
-#define HEAPSORT_VALUE_TYPE float
-#define HEAPSORT_LESS_THAN(a, b) ((a) < (b))
-#include "heapsort.h"
-#undef HEAPSORT_VALUE_TYPE
-#undef HEAPSORT_LESS_THAN
+declare_array_heapsort_inline(float, my_compare);
 
 int main() {
     array(float) list = array_init();
@@ -18,7 +15,7 @@ int main() {
         array_push(float)(list, sqrt((float) rint));
     }
 
-    array_heapsort(float)(list);
+    array_heapsort(float, my_compare)(list);
 
     float previous = -1.0;
     for (int i = 0; i < 100; i++) {

@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "heapsort_inline.h"
+#include "array/heapsort.h"
 
 /* Defines a functions to sort in decreasing order. */
 static inline int my_compare(float a, float b) { return a > b; }

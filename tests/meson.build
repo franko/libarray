@@ -7,6 +7,7 @@ test_array_remove_1 = executable('test-array-remove-1', 'test-array-remove-1.c',
 test_array_insert_1 = executable('test-array-insert-1', 'test-array-insert-1.c', link_with: libarray, include_directories: array_include_dir, dependencies: m_dep)
 test_heapsort_1 = executable('test-heapsort-1', 'test-heapsort-1.c', link_with: libarray, include_directories: array_include_dir, dependencies: m_dep)
 test_heapsort_2 = executable('test-heapsort-2', 'test-heapsort-2.c', link_with: libarray, include_directories: array_include_dir, dependencies: m_dep)
+test_array_search_1 = executable('test-array-search-1', 'test-array-search-1.c', link_with: libarray, include_directories: array_include_dir, dependencies: m_dep)
 
 test('test array 1', test_array_1)
 test('test array 2', test_array_2)
@@ -17,3 +18,4 @@ test('test array remove 1', test_array_remove_1)
 test('test array insert 1', test_array_insert_1)
 test('test heapsort 1', test_heapsort_1)
 test('test heapsort 2', test_heapsort_2)
+test('test array search 1', test_array_search_1)

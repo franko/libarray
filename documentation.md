@@ -4,7 +4,31 @@ Libarray is a very simple library based on C macros to implement generic array c
 
 It works by using macro to create array types and function that specialize of the type of the elements that the array contains.
 
+## Usage
+
+First the `array.h` header should be included.
+
+To actually use the array there are two approach. The first is to declare the array struct and functions and implement the functions separately. 
+
+```c
+declare_array(type);
+```
+Declare an array of `type` and the related functions.
+
+```c
+implement_array(type);
+```
+Implement tha functions related to the `array(type)`.
+
+The second approach is to declare everything inline using the macro:
+
+```c
+declare_array_inline(type);
+```
+Declare inline an array of `type` and all the related functions.
+
 ***
+
 
 ### Array type
 ```c
